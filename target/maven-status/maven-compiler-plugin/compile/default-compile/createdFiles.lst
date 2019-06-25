@@ -1,0 +1,3 @@
+com\example\jsfdemo\data\Robot.class
+com\example\jsfdemo\mbean\RobotManagerMBean.class
+com\example\jsfdemo\JsfdemoApplication.class

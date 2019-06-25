@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core" xml:lang="en" lang="en"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>JSF Weboldalunk</title>
+</h:head>
+<h:body>
+    <h1>Robot karbantartó alkamazásunk</h1>
+    <h:form>
+        <p:messages />
+        <p:panelGrid columns="2">
+            <p:outputLabel value="Név"/>
+            <p:inputText value="#{robotManagerMBean.selectedRobot.name}"/>
+            <p:outputLabel value="Típus"/>
+            <p:inputText value="#{robotManagerMBean.selectedRobot.type}"/>
+            <p:outputLabel value="Fegyver"/>
+            <p:selectOneMenu id="weapon" value="#{robotManagerMBean.selectedRobot.weapon}"
+                             converter="#{weaponConverter}">
+                <f:selectItems value="#{robotManagerMBean.weaponList}" var="weapon" itemLabel="#{weapon.name}"
+                               itemValue="#{weapon}"/>
+            </p:selectOneMenu>
+            <p:commandButton value="Mentés" validateClient="true" actionListener="#{robotManagerMBean.save}" update="@form"/>
+        </p:panelGrid>
+
+        <p:dataTable id="robotTable" value="#{robotManagerMBean.robotList}" var="robot" rows="10"
+                     paginator="true"
+                     paginatorTemplate="{CurrentPageReport} {Exporters} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                     rowsPerPageTemplate="5,10,15">
+            <f:facet name="{Exporters}">
+                <h:commandLink>
+                    XLS
+                    <p:dataExporter type="xls" target="robotTable" fileName="robots"/>
+                </h:commandLink>
+
+                <h:commandLink>
+                    PDF
+                    <p:dataExporter type="pdf" target="robotTable" fileName="robots"/>
+                </h:commandLink>
+
+                <h:commandLink>
+                    XML
+                    <p:dataExporter type="xml" target="robotTable" fileName="robots"/>
+                </h:commandLink>
+            </f:facet>
+
+            <p:column headerText="Robot név" sortBy="#{robot.name}" filterBy="#{robot.name}"
+                      filterMatchMode="contains">
+                <h:outputText value="#{robot.name}"/>
+            </p:column>
+            <p:column headerText="Robot típus" sortBy="#{robot.type}" filterBy="#{robot.type}"
+                      filterMatchMode="contains">
+                <h:outputText value="#{robot.type}"/>
+            </p:column>
+            <p:column headerText="Létrehozás dátuma" sortBy="#{robot.createdDate}" filterBy="#{robot.createdDate}"
+                      filterMatchMode="contains">
+                <h:outputText value="#{robot.createdDate}">
+                    <f:convertDateTime pattern="yyyy-MM-dd"/>
+                </h:outputText>
+            </p:column>
+            <p:column headerText="Módosítás dátuma" sortBy="#{robot.lastModifiedDate}"
+                      filterBy="#{robot.lastModifiedDate}"
+                      filterMatchMode="contains">
+                <h:outputText value="#{robot.lastModifiedDate}">
+                    <f:convertDateTime pattern="yyyy-MM-dd"/>
+                </h:outputText>
+            </p:column>
+            <p:column headerText="Funkciók">
+                <p:commandButton value="Törlés" process="@this" actionListener="#{robotManagerMBean.delete(robot.id)}" update="@form"/>
+                <p:commandButton value="Módosítás" process="@this" actionListener="#{robotManagerMBean.selectOne(robot)}"
+                                 update="@form"/>
+
+            </p:column>
+        </p:dataTable>
+    </h:form>
+</h:body>
+</html>
